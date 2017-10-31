@@ -1,0 +1,364 @@
+<html>
+   <head>
+      <title>USA Exports Map</title>
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/maps/modules/map.js"></script>
+<script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/mapdata/countries/us/us-all.js"></script>
+
+<style>
+#container {
+    min-width: 320px;
+    max-width: 1000px;
+    height: 700px;
+    margin: 1em auto;
+}
+
+
+</style>
+
+<div id="container"></div>
+	</head>
+<body>
+
+<input class="button" type="button" value="Back"onclick="location.href='export.html'"/>
+
+    <script language = "JavaScript">
+	// New map-pie series type that also allows lat/lon as center option.
+// Also adds a sizeFormatter option to the series, to allow dynamic sizing
+// of the pies.
+Highcharts.seriesType('mappie', 'pie', {
+    center: null, // Can't be array by default anymore
+    clip: true, // For map navigation
+    states: {
+        hover: {
+            halo: {
+                size: 5
+            }
+        }
+    },
+    dataLabels: {
+        enabled: false
+    }
+}, {
+    getCenter: function () {
+        var options = this.options,
+            chart = this.chart,
+            slicingRoom = 2 * (options.slicedOffset || 0);
+        if (!options.center) {
+            options.center = [null, null]; // Do the default here instead
+        }
+        // Handle lat/lon support
+        if (options.center.lat !== undefined) {
+            var point = chart.fromLatLonToPoint(options.center);
+            options.center = [
+                chart.xAxis[0].toPixels(point.x, true),
+                chart.yAxis[0].toPixels(point.y, true)
+            ];
+        }
+        // Handle dynamic size
+        if (options.sizeFormatter) {
+            options.size = options.sizeFormatter.call(this);
+        }
+        // Call parent function
+        var result = Highcharts.seriesTypes.pie.prototype.getCenter.call(this);
+        // Must correct for slicing room to get exact pixel pos
+        result[0] -= slicingRoom;
+        result[1] -= slicingRoom;
+        return result;
+    },
+    translate: function (p) {
+        this.options.center = this.userOptions.center;
+        this.center = this.getCenter();
+        return Highcharts.seriesTypes.pie.prototype.translate.call(this, p);
+    }
+});
+
+
+var data = [
+        // state, demShare, repShare, libShare, grnShare, sumShare, winner, offset config for pies
+        ['Alabama', 1.2228,1.1993,1.2859,1.4074,5.66,1],
+        ['Alaska', 0.2868,0.3151,0.3073,0.2996,-5.89,0],
+        ['Arizona', 1.234,1.31,1.5072,1.5173,-2.82,1],
+        ['Arkansas', 0.4536,0.4234,0.3905,0.3933,-2.76,0],
+        ['California', 10.655,10.7202,11.0026,11.2689,-1.13,3, { lon: -1, drawConnector: false }],
+        ['Colorado', 0.5413,0.5157,0.5289,0.5224,-4.65,0],
+        ['Connecticut', 1.0406,0.9842,1.0141,0.992,-5.56,1, { lat: -1.5, lon: 1 }],
+        ['Delaware', 0.3375,0.3248,0.3598,0.3124,-16.19,0, { lat: -1.3, lon: 2 }],
+        ['District of Columbia', 0.1715,0.058,0.0724,0.0917,22.3,0, { lat: -2, lon: 2 }],
+        ['Florida', 3.8316,3.6032,3.5859,3.5871,-3.43,3],
+        ['Georgia', 2.3806,2.4301,2.5677,2.4565,-7.65,2],
+        ['Hawaii', 0.0379,0.0892,0.1262,0.0548,-58.05,0, { lat: -0.5, lon: 0.5, drawConnector: false }],
+        ['Idaho', 0.3668,0.3168,0.2857,0.3361,13.55,0],
+        ['Illinois', 4.1946,4.217,4.2181,4.1184,-5.75,3],
+        ['Indiana', 2.1676,2.1943,2.2499,2.3883,2.47,2],
+        ['Iowa', 0.8808,0.9317,0.8804,0.835,-8.45,1],
+        ['Kansas', 0.7893,0.7412,0.7112,0.7017,-4.76,1],
+        ['Kentucky', 1.6098,1.7114,1.8391,2.0123,5.63,2],
+        ['Louisiana', 4.0067,3.9935,3.239,3.3369,-0.55,2],
+        ['Maine', 0.1702,0.1733,0.1838,0.1982,4.06,0],
+        ['Maryland', 0.7442,0.754,0.6687,0.6656,-3.92,0, { lon: 0.6, drawConnector: false }],
+        ['Massachusetts', 1.6986,1.6884,1.6825,1.7844,2.38,2, { lon: 3 }],
+        ['Michigan', 3.763,3.5498,3.5895,3.7707,1.41,3],
+        ['Minnesota', 1.3152,1.3193,1.3317,1.3234,-4.07,1, { lon: -1, drawConnector: false }],
+        ['Mississippi', 0.7865,0.7081,0.7217,0.7233,-3.26,1],
+        ['Missouri', 0.8209,0.8749,0.908,0.9603,2.1,1],
+        ['Montana', 0.0954,0.0953,0.0934,0.0937,-3.13,0],
+        ['Nebraska', 0.4684,0.4865,0.4433,0.4397,-4.25,0],
+        ['Nevada', 0.5512,0.4743,0.5766,0.6729,12.65,0],
+        ['New Hampshire', 0.2224,0.261,0.2662,0.2855,3.54,0],
+        ['New Jersey', 2.3194,2.2558,2.1332,2.1518,-2.62,2, { lat: -1, lon: 1.2 }],
+        ['New Mexico', 0.1727,0.2344,0.2516,0.2503,-3.96,0],
+        ['New York', 5.4739,5.4773,5.5309,5.2874,-7.72,3],
+        ['North Carolina', 1.8592,1.9373,2.0093,2.0786,-0.13,2],
+        ['North Dakota', 0.2789,0.3399,0.2679,0.3662,31.95,0],
+        ['Ohio', 3.2339,3.2457,3.4034,3.3976,-3.63,2],
+        ['Oklahoma', 0.4384,0.3889,0.3493,0.3479,-3.86,0],
+        ['Oregon', 1.1804,1.2879,1.3363,1.4991,8.3,1],
+        ['Pennsylvania', 2.6088,2.4916,2.6237,2.5144,-7.49,2],
+        ['Rhode Island', 0.1371,0.1473,0.1419,0.157,6.8,0, { lat: -0.7, lon: 1.7 }],
+        ['South Carolina', 1.6687,1.8357,2.0617,2.1586,1.08,2],
+        ['South Dakota', 0.1002,0.0973,0.0945,0.0843,-13.85,0],
+        ['Tennessee', 2.0572,2.0502,2.168,2.1663,-3.54,2],
+        ['Texas', 17.5934,17.6068,16.5395,15.9273,-7.04,1],
+        ['Utah', 1.0207,0.7537,0.8854,0.8324,-9.25,1],
+        ['Vermont', 0.2551,0.2263,0.2117,0.206,-6.03,0, { lat: 2 }],
+        ['Virginia', 1.1337,1.1956,1.1843,1.1243,-8.36,1],
+        ['Washington', 5.1713,5.5836,5.7467,5.483,-7.89,3],
+        ['West Virginia', 0.5532,0.4684,0.3881,0.3477,-13.5,0],
+        ['Wisconsin', 1.4641,1.4444,1.4928,1.4487,-6.32,1],
+        ['Wyoming', 0.0856,0.1083,0.0782,0.0757,-6.54,0]
+    ],
+    maxShare = 0,
+   demColor = '#984ea3',
+    repColor = '#f0027f',
+    libColor = '#ffff33',
+    grnColor = '#33a02c';
+
+
+
+// Compute max Share to find relative sizes of bubbles
+Highcharts.each(data, function (row) {
+    maxShare = Math.max(maxShare, row[5]);
+});
+
+// Build the chart
+var chart = Highcharts.mapChart('container', {
+    title: {
+        text: 'Choropleth of USA 2016 Exports '
+    },
+
+    chart: {
+        animation: false // Disable animation, especially for zooming
+    },
+
+    colorAxis: {
+        dataClasses: [{
+            from: 0,
+            to: 1,
+            color: '#fed976',
+            name: '<10000'
+        }, {
+            from: 1,
+            to: 2,
+            color: '#feb24c',
+            name: '10000-25000'
+        }, {
+            from: 2,
+            to: 3,
+            name: '25000-50000',
+            color: '#fd8d3c'
+        }, {
+            from: 3,
+            to: 4,
+            name: '>50000',
+            color: '#f03b20'
+        }]
+    },
+
+    mapNavigation: {
+        enabled: true
+    },
+    // Limit zoom range
+    yAxis: {
+        minRange: 2300
+    },
+
+    tooltip: {
+        useHTML: true
+    },
+exporting: {enabled: false},
+						credits: {enabled: false},
+    // Default options for the pies
+    plotOptions: {
+        mappie: {
+            borderColor: 'rgba(255,255,255,0.4)',
+            borderWidth: 1,
+            tooltip: {
+                headerFormat: ''
+            }
+        }
+    },
+
+    series: [{
+        mapData: Highcharts.maps['countries/us/us-all'],
+        data: data,
+        name: 'States',
+        borderColor: '#FFF',
+        showInLegend: false,
+        joinBy: ['name', 'id'],
+        keys: ['id', 'demShare', 'repShare', 'libShare', 'grnShare',
+            'sumShare', 'value', 'pieOffset'],
+        tooltip: {
+            headerFormat: '',
+            pointFormatter: function () {
+                var hoverShare = this.hoverShare; // Used by pie only
+                return '<b>' + this.id + ' Share</b><br/>' +
+                    Highcharts.map([
+                        ['Percent in 2013', this.demShare, demColor],
+                        ['Percent in 2014', this.repShare, repColor],
+                        ['Percent in 2015', this.libShare, libColor],
+                        ['Percent in 2016', this.grnShare, grnColor]
+                    ].sort(function (a, b) {
+                        return b[1] - a[1]; // Sort tooltip by most Share
+                    }), function (line) {
+                        return '<span style="color:' + line[2] +
+                            // Colorized bullet
+                            '">\u25CF</span> ' +
+                            // Party and Share
+                            (line[0] === hoverShare ? '<b>' : '') +
+                            line[0] + ': ' +
+                            Highcharts.numberFormat(line[1], 0) +
+                            (line[0] === hoverShare ? '</b>' : '') +
+                            '<br/>';
+                    }).join('') +
+                    '<hr/>Change in 2015-16: ' + Highcharts.numberFormat(this.sumShare, 0);
+            }
+        }
+    }, {
+        name: 'Separators',
+        type: 'mapline',
+        //data: Highcharts.geojson(Highcharts.maps['countries/us/us-all'], 'mapline'),
+        color: '#5942f4',
+        showInLegend: false,
+        enableMouseTracking: false
+    }, {
+        name: 'Connectors',
+        type: 'mapline',
+        color: 'rgba(130, 130, 130, 0.5)',
+        zIndex: 5,
+        showInLegend: false,
+        enableMouseTracking: false
+    }]
+});
+
+// When clicking legend items, also toggle connectors and pies
+Highcharts.each(chart.legend.allItems, function (item) {
+    var old = item.setVisible;
+    item.setVisible = function () {
+        var legendItem = this;
+        old.call(legendItem);
+        Highcharts.each(chart.series[0].points, function (point) {
+            if (chart.colorAxis[0].dataClasses[point.dataClass].name === legendItem.name) {
+                // Find this state's pie and set visibility
+                Highcharts.find(chart.series, function (item) {
+                    return item.name === point.id;
+                }).setVisible(legendItem.visible, false);
+                // Do the same for the connector point if it exists
+                var connector = Highcharts.find(chart.series[2].points, function (item) {
+                    return item.name === point.id;
+                });
+                if (connector) {
+                    connector.setVisible(legendItem.visible, false);
+                }
+            }
+        });
+        chart.redraw();
+    };
+});
+
+// Add the pies after chart load, optionally with offset and connectors
+Highcharts.each(chart.series[0].points, function (state) {
+    if (!state.id) {
+        return; // Skip points with no data, if any
+    }
+
+    var pieOffset = state.pieOffset || {},
+        centerLat = parseFloat(state.properties.latitude),
+        centerLon = parseFloat(state.properties.longitude);
+
+    // Add the pie for this state
+    chart.addSeries({
+        type: 'mappie',
+        name: state.id,
+        zIndex: 6, // Keep pies above connector lines
+        sizeFormatter: function () {
+            var yAxis = this.chart.yAxis[0],
+                zoomFactor = (yAxis.dataMax - yAxis.dataMin) /
+                    (yAxis.max - yAxis.min);
+            return Math.max(
+                this.chart.chartWidth / 45 * zoomFactor, // Min size
+                this.chart.chartWidth / 11 * zoomFactor * state.sumShare / maxShare
+            );
+        },
+        tooltip: {
+            // Use the state tooltip for the pies as well
+            pointFormatter: function () {
+                return state.series.tooltipOptions.pointFormatter.call({
+                    id: state.id,
+                    hoverShare: this.name,
+                    demShare: state.demShare,
+                    repShare: state.repShare,
+                    libShare: state.libShare,
+                    grnShare: state.grnShare,
+                    sumShare: state.sumShare
+                });
+            }
+        },
+        data: [{
+            name: '<10000',
+            y: state.demShare,
+            color: demColor
+        }, {
+            name: '10000-25000',
+            y: state.repShare,
+            color: repColor
+        }, {
+            name: '25000-50000',
+            y: state.libShare,
+            color: libColor
+        }, {
+            name: '>50000',
+            y: state.grnShare,
+            color: grnColor
+        }],
+        center: {
+            lat: centerLat + (pieOffset.lat || 0),
+            lon: centerLon + (pieOffset.lon || 0)
+        }
+    }, false);
+
+    // Draw connector to state center if the pie has been offset
+    if (pieOffset.drawConnector !== false) {
+        var centerPoint = chart.fromLatLonToPoint({
+                lat: centerLat,
+                lon: centerLon
+            }),
+            offsetPoint = chart.fromLatLonToPoint({
+                lat: centerLat + (pieOffset.lat || 0),
+                lon: centerLon + (pieOffset.lon || 0)
+            });
+        chart.series[2].addPoint({
+            name: state.id,
+            path: 'M' + offsetPoint.x + ' ' + offsetPoint.y +
+                'L' + centerPoint.x + ' ' + centerPoint.y
+        }, false);
+    }
+});
+// Only redraw once all pies and connectors have been added
+chart.redraw();
+    </script>
+   </body>
+   
+</html>

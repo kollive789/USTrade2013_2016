@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Documentation</title>
+    <link rel=stylesheet href="style.css">
+</head>
+<body>
+<br>
+<br>
+<div class="wrapper">
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="document.html">Documentation</a></li>
+        <li><a href="">Video</a></li>
+    </ul>
+</div>
+
+
+<h2 align="center">
+</br>
+</br>
+The the sketch during planning are:<br> <img border="0" src="imgs/planning.jpg" width="900" height="500"><br><br>
+
+
+    We initiated our design with the Choropleth US map in the first page by provide a on click function on the states coloured based on Export/Import dollar value of a year. <br>Our attempt was to get trading details (Export and Import) of each state on click of the states by showing many drop down lists in the later page which affected the graph below to show the trend in the data of that state.<br> In the process we encountered lot of hindrance (may be because of our limited skill in D3) and hence had to change our design.
+
+    <br>
+    <br><br>Design Inputs:<br>
+<br>
+
+      The map under import and export which shows the values for each state for the year 2016 is coded in D3 and the rest data is visualized using highchart libraries. <br>Our visualization idea is to take the user to one single page from where he/she will be able to drilldown to lowest entity in any trade. In the landing page links to Import and Export are provided for specific visualization.
+    <br> <br><br><br><img border="0" src="imgs/1.png" width="900" height="500"><br><br><br>Like on click on “Compare Share Wise” button the user will be taken to new page which will display Choropleth US map with Year wise (2013 to 2016) import share in the tooltip of mouseover on each states.
+    <br>The color differentiation in each state is based on the trading $ value. Similar visualization is done for Export as well. These are the initial version of the maps but then we decided to maintain consistency and used the same colours which were used for the import and export maps<br><br><br><br> <img border="0" src="imgs/2.png" width="900" height="500"><br><br><br><br><br> <img border="0" src="imgs/3.png" width="900" height="500"><br><br><br><br>
+    Comparative year wise trade (both export and import) can be seen on click of “Trading Countries” button. On click of bar for each year state wise trade ($ value) contribution for that year can be seen in bar graph.<br> <br><br><br><img border="0" src="imgs/4.png" width="900" height="500"><br><br><br><br>
+    <br> <br><br><br><img border="0" src="imgs/5.png" width="900" height="500"><br><br><br>
+    <br>On click of each bar for a state the bar graph of the corresponding trading countries can be seen. This interactivity is consistent across every year for both Import and Export and with lowest drilldown to the country level.
+    Product wise export and import product spread for a particular state can be seen on click of “Compare Product Wise” button. There is a dropdown list to select the state.
+<br>
+
+    All the colours used are colour blind safe and the tooltip helps the users to understand the value of the particular section of the visualization. <br> Also the user can zoon in to see the share maps in the import and export to see the exact values of the year wise share in th pie chart<br>
+
+</h2>
+
+<h1 align="center">REFERNCES:</h1>
+<h2 align="center">
+http://axismaps.github.io/thematic-cartography/articles/choropleth.html
+<br>
+http://bl.ocks.org/michellechandra/0b2ce4923dc9b5809922
+<br>
+http://www.d3noob.org/2013/03/a-simple-d3js-map-explained.html
+<br>
+http://jonathansoma.com/tutorials/d3/shape-maps/
+<br>
+https://forum.freecodecamp.org/t/us-state-map-visualization-using-d3-js/19479
+<br>
+https://github.com/sj6257/ResourceUtilization-DataViz-D3
+<br>
+http://pages.iu.edu/~sajagtap/dataVis/02/index.html
+<br>
+https://bl.ocks.org/mbostock/4090848
+<br>
+https://bl.ocks.org/mbostock/4060606
+<br>
+http://jsfiddle.net/gh/get/jquery/2/highcharts/highcharts/tree/master/samples/highcharts/drilldown/basic/ <br>
+http://jsfiddle.net/gh/get/library/pure/highcharts/highcharts/tree/master/samples/highcharts/demo/column-stacked/ <br>
+</h2>
+
+</body>
+</html>
